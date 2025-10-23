@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <Properties>
+        <Property name="basePath">logs</Property>
+        <Property name="logPattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- Console Appender -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${logPattern}"/>
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
+
+        <!-- File Appender - All Logs -->
+        <RollingFile name="FileAppender"
+                     fileName="${basePath}/automation.log"
+                     filePattern="${basePath}/automation-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${logPattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+        <!-- File Appender - Error Logs Only -->
+        <RollingFile name="ErrorFileAppender"
+                     fileName="${basePath}/error.log"
+                     filePattern="${basePath}/error-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${logPattern}"/>
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="5MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5"/>
+        </RollingFile>
+
+        <!-- File Appender - Debug Logs -->
+        <RollingFile name="DebugFileAppender"
+                     fileName="${basePath}/debug.log"
+                     filePattern="${basePath}/debug-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${logPattern}"/>
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- Root Logger -->
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileAppender"/>
+            <AppenderRef ref="ErrorFileAppender"/>
+        </Root>
+
+        <!-- Logger for base package -->
+        <Logger name="base" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileAppender"/>
+            <AppenderRef ref="ErrorFileAppender"/>
+        </Logger>
+
+        <!-- Logger for pages package -->
+        <Logger name="pages" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileAppender"/>
+        </Logger>
+
+        <!-- Logger for utils package -->
+        <Logger name="utils" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileAppender"/>
+        </Logger>
+
+        <!-- Logger for tests package -->
+        <Logger name="tests" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileAppender"/>
+            <AppenderRef ref="ErrorFileAppender"/>
+        </Logger>
+    </Loggers>
+
+</Configuration>
